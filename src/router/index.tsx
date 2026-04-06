@@ -1,5 +1,5 @@
 import { useRoutes, Navigate } from 'react-router-dom'
-import { Login } from '@/views/Login'
+import { Login } from '@/views/login/Login'
 import { Welcome } from '@/views/Welcome'
 import { NotFound } from '@/views/404'
 import { Forbidden } from '@/views/403'
