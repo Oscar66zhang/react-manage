@@ -1,7 +1,6 @@
-//接口类型定义
-
+// 接口类型定义
 export namespace Login {
-	export interface parmas {
+	export interface params {
 		username: string
 		password: string
 	}
