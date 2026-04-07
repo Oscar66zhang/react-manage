@@ -22,6 +22,7 @@ instance.interceptors.request.use(
 		const token = storage.get('token')
 		if (token) {
 			config.headers['Authorization'] = `Bearer ${token}`
+			config.headers.icode = 'A7EEA094EA44'
 		}
 		if (env.mock) {
 			config.baseURL = env.mockApi

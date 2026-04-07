@@ -1,14 +1,16 @@
 import { Button, Form, Input } from 'antd'
 import styles from './index.module.css'
 import api from '@/api/api'
+import { Login as loginApi } from '@/types/api'
 
 type FieldType = {
   username?: string
   password?: string
 }
 export const Login = () => {
-  const onFinish = (values: any) => {
-    console.log('values', values)
+  const onFinish = async (values: loginApi.params) => {
+    const data = await api.login(values)
+    console.log('data:', data)
   }
   const onFinishFailed = () => {
     console.log('values')
