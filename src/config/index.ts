@@ -4,16 +4,6 @@
 
 type ENV = "dev" | "stg" | "prd"
 
-
-// const env: ENV = 'dev';
-// if (location.host.indexOf('localhost') > -1) {
-// 	env = 'dev';
-// } else if (location.host === 'driver-stg.marsview.cc') {
-// 	env = 'stg'
-// } else {
-// 	env = 'prd'
-// }
-
 const env = document.documentElement.dataset.env as ENV
 
 const config = {
@@ -22,21 +12,21 @@ const config = {
 		uploadApi: "http://api-driver-dev.marsview.cc",
 		cdn: "http://xxx.aliyun.com",
 		mock: true,
-		mockApi: "https://www.fastmock.site/mock/5841b82d5672783b6fd62bb2a06aeb1f/api/users/login"
+		mockApi: "http://127.0.0.1:4523/m1/8065399-7820911-default"
 	},
 	'stg': {
 		baseApi: '/api',
 		uploadApi: "http://api-driver-stg.marsview.cc",
 		cdn: "http://xxx.aliyun.com",
 		mock: false,
-		mockApi: "https://www.fastmock.site/mock/5841b82d5672783b6fd62bb2a06aeb1f/api/users/login"
+		mockApi: ""
 	},
 	'prd': {
 		baseApi: '/api',
 		uploadApi: "http://api-driver.marsview.cc",
 		cdn: "http://xxx.aliyun.com",
 		mock: false,
-		mockApi: "https://www.fastmock.site/mock/5841b82d5672783b6fd62bb2a06aeb1f/api/users/login"
+		mockApi: ""
 	}
 }
 

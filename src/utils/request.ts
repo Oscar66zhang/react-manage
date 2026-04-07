@@ -1,15 +1,15 @@
-import { message } from 'antd'
 import axios, { AxiosError } from 'axios'
 import { hideLoading, showLoading } from './loading'
 import storage from './storage';
 import env from '@/config';
+import { message } from './AntdGlobal'
 
 console.log(import.meta.env);
 
 
 //创建实例
 const instance = axios.create({
-	baseURL: import.meta.env.VITE_BASE_API,
+	// baseURL: import.meta.env.VITE_BASE_API,
 	timeout: 5000,
 	timeoutErrorMessage: '请求超时，请稍后再试',
 	withCredentials: true

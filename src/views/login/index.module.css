@@ -4,7 +4,9 @@
   background: url(/public/images/login_bg.jpeg) no-repeat;
   background-size: cover;
   background-position: center;
-
+  /* :global(.ant-btn-primary) {
+    background-color: red;
+  } */
   .title {
     font-size: 30px;
     line-height: 1.5;
@@ -13,7 +15,7 @@
     font-weight: 500;
   }
 
-  .login-wrapper {
+  .loginWrapper {
     background-color: #fff;
     position: absolute;
     right: 10%;

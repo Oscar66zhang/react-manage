@@ -1,18 +1,22 @@
-import React from 'react'
-import type { FormProps, FieldType } from 'antd'
-import { Button, Checkbox, Form, Input } from 'antd'
-import './index.less'
+import { Button, Form, Input } from 'antd'
+import styles from './index.module.css'
+import api from '@/api/api'
+
+type FieldType = {
+  username?: string
+  password?: string
+}
 export const Login = () => {
-  const onFinish = () => {
-    console.log('values')
+  const onFinish = (values: any) => {
+    console.log('values', values)
   }
   const onFinishFailed = () => {
     console.log('values')
   }
   return (
-    <div className='login'>
-      <div className='login-wrapper'>
-        <div className='title'>系统登录</div>
+    <div className={styles.login}>
+      <div className={styles.loginWrapper}>
+        <div className={styles.title}>系统登录</div>
         <Form
           name='basic'
           labelCol={{ span: 8 }}
