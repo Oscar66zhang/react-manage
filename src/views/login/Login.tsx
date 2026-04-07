@@ -2,6 +2,7 @@ import { Button, Form, Input } from 'antd'
 import styles from './index.module.css'
 import api from '@/api/api'
 import { Login as loginApi } from '@/types/api'
+import storage from '@/utils/storage'
 
 type FieldType = {
   username?: string
@@ -11,6 +12,7 @@ export const Login = () => {
   const onFinish = async (values: loginApi.params) => {
     const data = await api.login(values)
     console.log('data:', data)
+    storage.set('token', data)
   }
   const onFinishFailed = () => {
     console.log('values')

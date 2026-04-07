@@ -3,7 +3,7 @@
   height: 100vh;
   background: url(/public/images/login_bg.jpeg) no-repeat;
   background-size: cover;
-  background-position: center;
+  background-position: right center;
   /* :global(.ant-btn-primary) {
     background-color: red;
   } */
