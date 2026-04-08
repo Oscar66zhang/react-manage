@@ -3,6 +3,7 @@ import { hideLoading, showLoading } from './loading'
 import storage from './storage';
 import env from '@/config';
 import { message } from './AntdGlobal'
+import { Result } from '@/types/api';
 
 console.log(import.meta.env);
 
@@ -42,10 +43,11 @@ instance.interceptors.request.use(
 //响应拦截器
 instance.interceptors.response.use(
 	(response) => {
-		const data = response.data
+		const data: Result<any> = response.data
 		hideLoading()
 		if (data.code == 200) {
 			localStorage.removeItem('token')
+			storage.remove('token')
 			// location.href = '/login'
 		} else if (data.code != 0) {
 			message.error(data.msg || '请求失败，请稍后再试');

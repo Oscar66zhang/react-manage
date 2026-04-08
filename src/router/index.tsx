@@ -6,7 +6,7 @@ import { Forbidden } from '@/views/403'
 
 const routes = [
   {
-    path: '/',
+    path: '/welcome',
     element: <Welcome />
   },
   {

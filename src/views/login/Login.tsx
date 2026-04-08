@@ -1,4 +1,5 @@
 import { Button, Form, Input } from 'antd'
+import { message } from '@/utils/AntdGlobal'
 import styles from './index.module.css'
 import api from '@/api/api'
 import { Login as loginApi } from '@/types/api'
@@ -13,7 +14,10 @@ export const Login = () => {
     const data = await api.login(values)
     console.log('data:', data)
     storage.set('token', data)
-  }
+		message.success('登录成功')
+		const params=new URLSearchParams(location.search)
+		location.href=params.get('callback') || '/welcome'
+	}
   const onFinishFailed = () => {
     console.log('values')
   }
