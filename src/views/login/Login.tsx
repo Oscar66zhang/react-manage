@@ -4,20 +4,23 @@ import styles from './index.module.css'
 import api from '@/api/api'
 import { Login as loginApi } from '@/types/api'
 import storage from '@/utils/storage'
+import { useState } from 'react'
 
 type FieldType = {
   username?: string
   password?: string
 }
 export const Login = () => {
+  const [loading, setLoading] = useState(false)
   const onFinish = async (values: loginApi.params) => {
-    const data = await api.login(values)
-    console.log('data:', data)
+    setLoading(true)
+    const data: any = await api.login(values)
+    setLoading(false)
     storage.set('token', data)
-		message.success('登录成功')
-		const params=new URLSearchParams(location.search)
-		location.href=params.get('callback') || '/welcome'
-	}
+    message.success('登录成功')
+    const params = new URLSearchParams(location.search)
+    location.href = params.get('callback') || '/welcome'
+  }
   const onFinishFailed = () => {
     console.log('values')
   }
@@ -43,7 +46,7 @@ export const Login = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type='primary' htmlType='submit' block>
+            <Button type='primary' htmlType='submit' loading={loading} block>
               登陆
             </Button>
           </Form.Item>

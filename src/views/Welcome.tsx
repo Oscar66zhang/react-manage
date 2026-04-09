@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import { Button } from 'antd'
 import storage from '@/utils/storage'
-import { formatMoney, fomratDate, formatNum } from '@/utils'
+// import { formatMoney, fomratDate, formatNum } from '@/utils'
 export const Welcome = () => {
   const handleClick = () => {
     request.post<string>('/users/login', {})
