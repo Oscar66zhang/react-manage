@@ -20,7 +20,7 @@ export default function DashBoard() {
       },
       grid: {
         left: '5%',
-        right: '15%',
+        right: '5%',
         bottom: '10%'
       },
       xAxis: {
