@@ -1,0 +1,27 @@
+.navHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+  padding: 0 16px;
+  width: 100%;
+}
+:global(.ant-breadcrumb-separator) {
+  color: #fff !important;
+}
+.left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  /* 图标和面包屑间距 */
+  margin-left: 130px;
+}
+.right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+}
+.nickName {
+  cursor: pointer;
+}

@@ -5,6 +5,7 @@ import api from '@/api/api'
 import { Login as loginApi } from '@/types/api'
 import storage from '@/utils/storage'
 import { useState } from 'react'
+import store from '@/store'
 
 type FieldType = {
   username?: string
@@ -13,13 +14,19 @@ type FieldType = {
 export const Login = () => {
   const [loading, setLoading] = useState(false)
   const onFinish = async (values: loginApi.params) => {
-    setLoading(true)
-    const data: any = await api.login(values)
-    setLoading(false)
-    storage.set('token', data)
-    message.success('登录成功')
-    const params = new URLSearchParams(location.search)
-    location.href = params.get('callback') || '/welcome'
+    try {
+      setLoading(true)
+      const data = await api.login(values)
+      setLoading(false)
+      storage.set('token', data)
+      store.token = data
+      message.success('登录成功')
+      const params = new URLSearchParams(location.search)
+      location.href = params.get('callback') || '/welcome'
+    } catch (error) {
+      setLoading(false)
+      console.log('error:', error)
+    }
   }
   const onFinishFailed = () => {
     console.log('values')
