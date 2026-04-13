@@ -45,6 +45,100 @@ export default function DashBoard() {
         }
       ]
     })
+
+    const pieChartCityDom = document.getElementById('pieChartCity')
+    const pieChartCityInstance = echarts.init(pieChartCityDom)
+    pieChartCityInstance.setOption({
+      title: {
+        text: '司机城市分布',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left'
+      },
+      series: [
+        {
+          name: '城市分布',
+          type: 'pie',
+          radius: '50%',
+          center: ['50%', '50%'],
+          data: [
+            { value: 335, name: '北京' },
+            { value: 310, name: '上海' },
+            { value: 274, name: '广州' },
+            { value: 235, name: '杭州' },
+            { value: 400, name: '武汉' }
+          ]
+        }
+      ]
+    })
+
+    const pieChartAgeDom = document.getElementById('pieChartAge')
+    const pieChartAgeInstance = echarts.init(pieChartAgeDom)
+    pieChartAgeInstance.setOption({
+      title: {
+        text: '司机年龄分布',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left'
+      },
+      series: [
+        {
+          name: '年龄分布',
+          type: 'pie',
+          center: ['50%', '50%'],
+          radius: [50, 180],
+          roseType: 'area',
+          data: [
+            { value: 30, name: '北京' },
+            { value: 40, name: '上海' },
+            { value: 64, name: '广州' },
+            { value: 20, name: '杭州' },
+            { value: 35, name: '武汉' }
+          ]
+        }
+      ]
+    })
+
+    const radarChartDom = document.getElementById('radarChart')
+    const radarChartDomInstance = echarts.init(radarChartDom)
+    radarChartDomInstance.setOption({
+      title: {
+        text: '司机模型诊断',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'item'
+      },
+      legend: {
+        data: ['司机模型诊断']
+      },
+      radar: {
+        indicator: [
+          { name: '服务态度', max: 10 },
+          { name: '在线时长', max: 600 },
+          { name: '接单率', max: 100 },
+          { name: '评分', max: 5 },
+          { name: '关注度', max: 10000 }
+        ]
+      },
+      series: [
+        {
+          name: '模型诊断',
+          type: 'radar',
+          data: [{ value: [8, 300, 80, 4, 9000], name: '司机模型诊断' }]
+        }
+      ]
+    })
   }, [])
 
   return (
@@ -91,8 +185,10 @@ export default function DashBoard() {
       </div>
       <div className={styles.chart}>
         <Card title='司机分布' extra={<Button type='primary'>刷新</Button>}>
-          <div id='pieChartCity' className={styles.itemChart}></div>
-          <div id='pieChartAge' className={styles.itemChart}></div>
+          <div className={styles.pieChart}>
+            <div id='pieChartCity' className={styles.itemPie}></div>
+            <div id='pieChartAge' className={styles.itemPie}></div>
+          </div>
         </Card>
       </div>
       <div className={styles.chart}>
