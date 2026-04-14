@@ -13,13 +13,14 @@ import store from '@/store'
 const { Header, Content, Sider, Footer } = Layout
 
 const App: React.FC = () => {
+  const { collapsed, updateUserInfo } = store()
   useEffect(() => {
     getUserInfo()
   }, [])
 
   const getUserInfo = async () => {
     const data = await api.getUserInfo()
-    store.updateUserInfo(data)
+    updateUserInfo(data)
   }
 
   const {
@@ -29,7 +30,7 @@ const App: React.FC = () => {
   return (
     <Watermark content='React'>
       <Layout style={{ height: '100vh' }}>
-        <Sider>
+        <Sider collapsed={collapsed}>
           <Menu />
         </Sider>
         <Layout>

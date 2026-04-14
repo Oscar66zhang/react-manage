@@ -45,19 +45,21 @@ instance.interceptors.response.use(
 	(response) => {
 		const data: Result = response.data
 		hideLoading()
-		if (data.code == 200) {
+		if (data.code == 401) {
 			localStorage.removeItem('token')
 			storage.remove('token')
-			// location.href = '/login'
-		} else if (data.code != 0) {
-			if (response.config.showError === false) {
-				return Promise.resolve(data);
-			} else {
-				message.error(data.msg || '请求失败，请稍后再试');
-				return Promise.reject(data);
-			}
+			location.href = '/login?callback=' + encodeURIComponent(location.href)
+			return Promise.reject(data)
 		}
-		return data.data;
+
+		if (data.code == 200) {
+			return data.data
+		}
+
+
+		if (response.config.showError === false) {
+			message.error(data.message || '请求失败')
+		}
 	}, (error) => {
 		hideLoading()
 		message.error(error.message || '请求失败，请稍后再试');

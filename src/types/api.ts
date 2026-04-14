@@ -10,7 +10,7 @@
 export interface Result<T = any> {
 	code: number,
 	data: T,
-	msg: string
+	message: string
 }
 
 
@@ -29,10 +29,21 @@ export namespace User {
 		userEmail: string,
 		deptId: string,
 		state: number,
+		mobile: string,
+		job: string,
 		role: number,
 		roleList: string,
 		createId: number,
 		deptName: string,
 		userImg: string
+	}
+}
+
+export namespace Dashboard {
+	export interface ReportData {
+		driverCount: number
+		totalMoney: number
+		orderCount: number
+		cityNum: number
 	}
 }

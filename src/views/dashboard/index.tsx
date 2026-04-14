@@ -1,13 +1,29 @@
 import { Descriptions, Card, Button } from 'antd'
 import styles from './index.module.less'
 import * as echarts from 'echarts'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import store from '@/store'
+import { formatMoney, formatNum, formatState } from '@/utils'
+import api from '@/api/api'
+import { Dashboard } from '@/types/api'
+import { useCharts } from '@/hook/useCharts'
 
 export default function DashBoard() {
+  const userInfo = store(state => state.userInfo)
+  const [report, setReport] = useState<Dashboard.ReportData>()
+
+  //初始化折线图
+  const [lineRef, lineChart] = useCharts()
+
+  //初始化饼图
+  const [pieRef1, pieChart1] = useCharts()
+  const [pieRef2, pieChart2] = useCharts()
+
+  //初始化雷达图
+  const [radarRef, radarChart] = useCharts()
+
   useEffect(() => {
-    const lineChartDom = document.getElementById('lineChart')
-    const chartInstance = echarts.init(lineChartDom)
-    chartInstance.setOption({
+    lineChart?.setOption({
       title: {
         text: '订单流水走势图'
       },
@@ -46,9 +62,7 @@ export default function DashBoard() {
       ]
     })
 
-    const pieChartCityDom = document.getElementById('pieChartCity')
-    const pieChartCityInstance = echarts.init(pieChartCityDom)
-    pieChartCityInstance.setOption({
+    pieChart1?.setOption({
       title: {
         text: '司机城市分布',
         left: 'center'
@@ -77,9 +91,7 @@ export default function DashBoard() {
       ]
     })
 
-    const pieChartAgeDom = document.getElementById('pieChartAge')
-    const pieChartAgeInstance = echarts.init(pieChartAgeDom)
-    pieChartAgeInstance.setOption({
+    pieChart2?.setOption({
       title: {
         text: '司机年龄分布',
         left: 'center'
@@ -109,9 +121,7 @@ export default function DashBoard() {
       ]
     })
 
-    const radarChartDom = document.getElementById('radarChart')
-    const radarChartDomInstance = echarts.init(radarChartDom)
-    radarChartDomInstance.setOption({
+    radarChart?.setOption({
       title: {
         text: '司机模型诊断',
         left: 'center'
@@ -139,6 +149,15 @@ export default function DashBoard() {
         }
       ]
     })
+  }, [lineChart, pieChart1, pieChart2, radarChart])
+
+  const getReportData = async () => {
+    const data = await api.getReportData()
+    setReport(data)
+  }
+
+  useEffect(() => {
+    getReportData()
   }, [])
 
   return (
@@ -150,50 +169,50 @@ export default function DashBoard() {
           className={styles.userImg}
         />
         <Descriptions title='欢迎新同学，每天都要开心！'>
-          <Descriptions.Item label='用户ID'>100001</Descriptions.Item>
-          <Descriptions.Item label='邮箱'>test@mars.com</Descriptions.Item>
-          <Descriptions.Item label='状态'>在职</Descriptions.Item>
-          <Descriptions.Item label='手机号'>17600001111</Descriptions.Item>
-          <Descriptions.Item label='岗位'>前端工程师</Descriptions.Item>
-          <Descriptions.Item label='部门'>大前端</Descriptions.Item>
+          <Descriptions.Item label='用户ID'>{userInfo.userId}</Descriptions.Item>
+          <Descriptions.Item label='邮箱'>{userInfo.userEmail}</Descriptions.Item>
+          <Descriptions.Item label='状态'>{formatState(userInfo.state)}</Descriptions.Item>
+          <Descriptions.Item label='手机号'>{userInfo.mobile}</Descriptions.Item>
+          <Descriptions.Item label='岗位'>{userInfo.job}</Descriptions.Item>
+          <Descriptions.Item label='部门'>{userInfo.deptName}</Descriptions.Item>
         </Descriptions>
       </div>
 
       <div className={styles.report}>
         <div className={styles.card}>
           <div className='title'>司机数量</div>
-          <div className={styles.data}>100个</div>
+          <div className={styles.data}>{formatNum(report?.driverCount)}个</div>
         </div>
         <div className={styles.card}>
           <div className='title'>总流水</div>
-          <div className={styles.data}>10000元</div>
+          <div className={styles.data}>{formatMoney(report?.totalMoney)}元</div>
         </div>
         <div className={styles.card}>
           <div className='title'>总订单</div>
-          <div className={styles.data}>2000单</div>
+          <div className={styles.data}>{formatNum(report?.orderCount)}单</div>
         </div>
         <div className={styles.card}>
           <div className='title'>开通城市</div>
-          <div className={styles.data}>50座</div>
+          <div className={styles.data}>{formatNum(report?.cityNum)}座</div>
         </div>
       </div>
 
       <div className={styles.chart}>
         <Card title='订单和流水走势图' extra={<Button type='primary'>刷新</Button>}>
-          <div id='lineChart' className={styles.itemChart}></div>
+          <div ref={lineRef} className={styles.itemChart}></div>
         </Card>
       </div>
       <div className={styles.chart}>
         <Card title='司机分布' extra={<Button type='primary'>刷新</Button>}>
           <div className={styles.pieChart}>
-            <div id='pieChartCity' className={styles.itemPie}></div>
-            <div id='pieChartAge' className={styles.itemPie}></div>
+            <div ref={pieRef1} className={styles.itemPie}></div>
+            <div ref={pieRef2} className={styles.itemPie}></div>
           </div>
         </Card>
       </div>
       <div className={styles.chart}>
         <Card title='模型诊断' extra={<Button type='primary'>刷新</Button>}>
-          <div id='radarChart' className={styles.itemChart}></div>
+          <div ref={radarRef} className={styles.itemChart}></div>
         </Card>
       </div>
     </div>
