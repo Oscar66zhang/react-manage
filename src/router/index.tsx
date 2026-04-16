@@ -1,4 +1,4 @@
-import { useRoutes, Navigate } from 'react-router-dom'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { Login } from '@/views/login/Login'
 import { Welcome } from '@/views/welcome'
 import User from '@/views/system/user'
@@ -47,8 +47,9 @@ const routes = [
   }
 ]
 
-export default function Router() {
-  return useRoutes(routes)
-}
+//useRoutes: export default function Router() {
+//   return useRoutes(routes)
+// }
 
-//createBrowserRouter： export default createBrowserRouter(routes)
+// createBrowserRouter：
+export default createBrowserRouter(routes)

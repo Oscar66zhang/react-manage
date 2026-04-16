@@ -1,6 +1,6 @@
-import { BrowserRouter } from 'react-router-dom'
+import { RouterProvider } from 'react-router-dom'
 import { ConfigProvider, App as AntdApp } from 'antd'
-import Router from './router'
+import router from './router'
 import './App.css'
 import AntdGlobal from './utils/AntdGlobal'
 
@@ -15,13 +15,15 @@ const App = () => {
     >
       <AntdApp>
         <AntdGlobal />
-        <BrowserRouter>
-          <Router />
-        </BrowserRouter>
+        <RouterProvider router={router} />
       </AntdApp>
     </ConfigProvider>
   )
   // return <RouterProvider router={router}/>
+
+  // <BrowserRouter>
+  //     <Router />
+  //   </BrowserRouter>
 }
 
 export default App
