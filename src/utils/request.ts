@@ -55,11 +55,9 @@ instance.interceptors.response.use(
 		if (data.code == 200) {
 			return data.data
 		}
+		message.error(data.message || '请求失败')
+		return Promise.reject(data)
 
-
-		if (response.config.showError === false) {
-			message.error(data.message || '请求失败')
-		}
 	}, (error) => {
 		hideLoading()
 		message.error(error.message || '请求失败，请稍后再试');

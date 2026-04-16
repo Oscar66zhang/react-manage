@@ -23,6 +23,16 @@ export default function DashBoard() {
   const [radarRef, radarChart] = useCharts()
 
   useEffect(() => {
+    renderLineChart()
+    renderPieChart1()
+    renderPieChart2()
+    getRadarData()
+  }, [lineChart, pieChart1, pieChart2, radarChart])
+
+  //加载折线图数据
+  const renderLineChart = async () => {
+    if (!lineChart) return
+    const data = await api.getLineData()
     lineChart?.setOption({
       title: {
         text: '订单流水走势图'
@@ -40,9 +50,7 @@ export default function DashBoard() {
         bottom: '10%'
       },
       xAxis: {
-        type: 'category',
-        boundaryGap: false,
-        data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月']
+        data: data.label
       },
       yAxis: {
         type: 'value',
@@ -52,16 +60,21 @@ export default function DashBoard() {
         {
           name: '订单',
           type: 'line',
-          data: [10, 20, 30, 50, 60, 70, 80, 90, 100, 110, 120]
+          data: data.order
         },
         {
           name: '流水',
           type: 'line',
-          data: [1000, 2000, 3000, 5000, 600, 800, 2000, 3200, 1100, 1200, 1300, 1400]
+          data: data.money
         }
       ]
     })
+  }
 
+  //加载饼图1
+  const renderPieChart1 = async () => {
+    if (!pieChart1) return
+    const data = await api.getPieCityData()
     pieChart1?.setOption({
       title: {
         text: '司机城市分布',
@@ -80,17 +93,16 @@ export default function DashBoard() {
           type: 'pie',
           radius: '50%',
           center: ['50%', '50%'],
-          data: [
-            { value: 335, name: '北京' },
-            { value: 310, name: '上海' },
-            { value: 274, name: '广州' },
-            { value: 235, name: '杭州' },
-            { value: 400, name: '武汉' }
-          ]
+          data
         }
       ]
     })
+  }
 
+  //加载饼图2
+  const renderPieChart2 = async () => {
+    if (!pieChart2) return
+    const data = await api.getPieAgeData()
     pieChart2?.setOption({
       title: {
         text: '司机年龄分布',
@@ -107,20 +119,18 @@ export default function DashBoard() {
         {
           name: '年龄分布',
           type: 'pie',
-          center: ['50%', '50%'],
+          center: ['50%', '60%'],
           radius: [50, 180],
           roseType: 'area',
-          data: [
-            { value: 30, name: '北京' },
-            { value: 40, name: '上海' },
-            { value: 64, name: '广州' },
-            { value: 20, name: '杭州' },
-            { value: 35, name: '武汉' }
-          ]
+          data
         }
       ]
     })
+  }
 
+  const getRadarData = async () => {
+    const data = await api.getRadarData()
+    if (!radarChart) return
     radarChart?.setOption({
       title: {
         text: '司机模型诊断',
@@ -133,27 +143,28 @@ export default function DashBoard() {
         data: ['司机模型诊断']
       },
       radar: {
-        indicator: [
-          { name: '服务态度', max: 10 },
-          { name: '在线时长', max: 600 },
-          { name: '接单率', max: 100 },
-          { name: '评分', max: 5 },
-          { name: '关注度', max: 10000 }
-        ]
+        indicator: data.indicator
       },
       series: [
         {
           name: '模型诊断',
           type: 'radar',
-          data: [{ value: [8, 300, 80, 4, 9000], name: '司机模型诊断' }]
+          data: [data.data]
         }
       ]
     })
-  }, [lineChart, pieChart1, pieChart2, radarChart])
+  }
 
+  //加载雷达图
   const getReportData = async () => {
     const data = await api.getReportData()
     setReport(data)
+  }
+
+  //刷新饼图
+  const handleRefresh = () => {
+    renderPieChart1()
+    renderPieChart2()
   }
 
   useEffect(() => {
@@ -198,12 +209,26 @@ export default function DashBoard() {
       </div>
 
       <div className={styles.chart}>
-        <Card title='订单和流水走势图' extra={<Button type='primary'>刷新</Button>}>
+        <Card
+          title='订单和流水走势图'
+          extra={
+            <Button type='primary' onClick={renderLineChart}>
+              刷新
+            </Button>
+          }
+        >
           <div ref={lineRef} className={styles.itemChart}></div>
         </Card>
       </div>
       <div className={styles.chart}>
-        <Card title='司机分布' extra={<Button type='primary'>刷新</Button>}>
+        <Card
+          title='司机分布'
+          extra={
+            <Button type='primary' onClick={handleRefresh}>
+              刷新
+            </Button>
+          }
+        >
           <div className={styles.pieChart}>
             <div ref={pieRef1} className={styles.itemPie}></div>
             <div ref={pieRef2} className={styles.itemPie}></div>
@@ -211,7 +236,14 @@ export default function DashBoard() {
         </Card>
       </div>
       <div className={styles.chart}>
-        <Card title='模型诊断' extra={<Button type='primary'>刷新</Button>}>
+        <Card
+          title='模型诊断'
+          extra={
+            <Button type='primary' onClick={getRadarData}>
+              刷新
+            </Button>
+          }
+        >
           <div ref={radarRef} className={styles.itemChart}></div>
         </Card>
       </div>
