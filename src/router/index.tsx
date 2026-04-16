@@ -1,6 +1,7 @@
 import { useRoutes, Navigate } from 'react-router-dom'
 import { Login } from '@/views/login/Login'
 import { Welcome } from '@/views/welcome'
+import User from '@/views/system/user'
 import { NotFound } from '@/views/404'
 import { Forbidden } from '@/views/403'
 import Layout from '@/layout'
@@ -25,6 +26,10 @@ const routes = [
       {
         path: '/dashboard',
         element: <DashBoard />
+      },
+      {
+        path: '/userList',
+        element: <User />
       }
     ]
   },
