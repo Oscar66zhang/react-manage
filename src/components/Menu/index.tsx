@@ -8,7 +8,8 @@ const SideMenu = () => {
     {
       label: '工作台',
       key: '1',
-      icon: <DesktopOutlined />
+      icon: <DesktopOutlined />,
+      path: '/dashboard'
     },
     {
       label: '系统管理',
@@ -18,7 +19,8 @@ const SideMenu = () => {
         {
           label: '用户管理',
           key: '3',
-          icon: <TeamOutlined />
+          icon: <TeamOutlined />,
+          path: '/userList'
         }
       ]
     }

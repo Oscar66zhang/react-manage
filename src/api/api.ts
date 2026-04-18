@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-import { Dashboard, Login, User } from "@/types/api";
+import { Dashboard, Login, Result, ResultData, User } from "@/types/api";
 export default {
 	login(params: Login.params) {
 		return request.post<string>('/users/login', params, { showLoading: false, showError: false })
@@ -26,6 +26,11 @@ export default {
 	// 获取折线图数据
 	getRadarData() {
 		return request.get<Dashboard.RadarData>('/order/dashboard/getRadarData')
+	},
+
+	//获取用户列表
+	getUserList(params: User.Params) {
+		return request.get<ResultData<User.UserItem>>('/users/list', params)
 	}
 }
 
