@@ -31,6 +31,14 @@ export default {
 	//获取用户列表
 	getUserList(params: User.Params) {
 		return request.get<ResultData<User.UserItem>>('/users/list', params)
+	},
+	//创建用户
+	createUser(params: User.CreateParams) {
+		return request.post('/users/create', params)
+	},
+	//编辑用户
+	editUser(params: User.EditParams) {
+		return request.post('/users/edit', params)
 	}
 }
 

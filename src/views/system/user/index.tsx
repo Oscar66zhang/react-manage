@@ -1,14 +1,20 @@
-import { Button, Table, Form, Input, Space, Select, Option } from 'antd'
-import { useEffect, useState } from 'react'
+import { Button, Table, Form, Input, Space, Select } from 'antd'
+import { useEffect, useRef, useState } from 'react'
 import api from '@/api/api'
 import { PageParams, User } from '@/types/api'
 import { formatDate } from '@/utils/index'
 import CreateUser from './CreateUser'
+import { IAction } from '@/types/modal'
 
 export default function UserList() {
   const [form] = Form.useForm()
   const [data, setData] = useState<User.UserItem[]>([])
   const [total, setTotal] = useState(0)
+
+  const userRef = useRef<{
+    open: (type: IAction, data?: User.UserItem) => void | undefined
+  }>()
+
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10
@@ -42,15 +48,9 @@ export default function UserList() {
       pageNum: params.pageNum,
       pageSize: params.pageSize
     })
-    const list = Array.from({ length: 50 }).map((_, index) => {
-      return {
-        ...data.list[0],
-        userId: Date.now() + index
-      }
-    })
 
-    setData(list)
-    setTotal(list.length)
+    setData(data.list)
+    setTotal(data.list.length)
     setPagination({
       current: data.page.pageNum,
       pageSize: data.page.pageSize
@@ -113,12 +113,13 @@ export default function UserList() {
     // },
     {
       title: '操作',
-      dataIndex: 'action',
       key: 'action',
-      render() {
+      render(record) {
         return (
           <Space>
-            <Button type='text'>编辑</Button>
+            <Button type='text' onClick={() => handleEdit(record)}>
+              编辑
+            </Button>
             <Button type='text' danger>
               删除
             </Button>
@@ -127,6 +128,16 @@ export default function UserList() {
       }
     }
   ]
+
+  //创建用户
+  const handleCreate = () => {
+    userRef.current?.open('create')
+  }
+
+  // 编辑用户
+  const handleEdit = (record: User.UserItem) => {
+    userRef.current?.open('edit', record)
+  }
 
   return (
     <div className='user-list'>
@@ -165,7 +176,9 @@ export default function UserList() {
         <div className='header-wrapper'>
           <div className='title'>用户列表</div>
           <div className='action'>
-            <Button type='primary'>新增</Button>
+            <Button type='primary' onClick={handleCreate}>
+              新增
+            </Button>
             <Button type='primary' danger>
               批量删除
             </Button>
@@ -197,7 +210,15 @@ export default function UserList() {
         />
         ;
       </div>
-      <CreateUser />
+      <CreateUser
+        mRef={userRef}
+        update={() => {
+          getUserList({
+            pageNum: 1,
+            pageSize: pagination.pageSize
+          })
+        }}
+      />
     </div>
   )
 }
