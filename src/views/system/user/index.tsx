@@ -1,13 +1,16 @@
-import { Button, Table, Form, Input, Space, Select } from 'antd'
+import { Button, Table, Form, Input, Space, Select, Modal } from 'antd'
 import { useEffect, useRef, useState } from 'react'
 import api from '@/api/api'
 import { PageParams, User } from '@/types/api'
 import { formatDate } from '@/utils/index'
 import CreateUser from './CreateUser'
 import { IAction } from '@/types/modal'
+import { message } from '@/utils/AntdGlobal'
 
 export default function UserList() {
   const [form] = Form.useForm()
+  const [userIds, setUserIds] = useState<number[]>([])
+
   const [data, setData] = useState<User.UserItem[]>([])
   const [total, setTotal] = useState(0)
 
@@ -114,13 +117,13 @@ export default function UserList() {
     {
       title: '操作',
       key: 'action',
-      render(record:User.UserItem) {
+      render(record: User.UserItem) {
         return (
           <Space>
             <Button type='text' onClick={() => handleEdit(record)}>
               编辑
             </Button>
-            <Button type='text' danger>
+            <Button type='text' danger onClick={() => handleDel(record.userId)}>
               删除
             </Button>
           </Space>
@@ -137,6 +140,47 @@ export default function UserList() {
   // 编辑用户
   const handleEdit = (record: User.UserItem) => {
     userRef.current?.open('edit', record)
+  }
+
+  //删除用户
+  const handleDel = (userId: number) => {
+    Modal.confirm({
+      title: '删除确认',
+      content: <span>确认删除该用户吗？</span>,
+      onOk: async () => {
+        handleUserDelSubmit([userId])
+      }
+    })
+  }
+
+  //批量确认删除
+  const handlePatchConfirm = () => {
+    if (userIds.length === 0) {
+      message.error('请选择要删除的用户')
+      return
+    }
+    Modal.confirm({
+      title: '删除确认',
+      content: <span>确认删除该批用户吗？</span>,
+      onOk: () => {
+        handleUserDelSubmit(userIds)
+      }
+    })
+  }
+
+
+  const handleUserDelSubmit = async (ids: number[]) => {
+    try {
+      await api.delUser({
+        userIds: ids
+      })
+      message.success('删除成功')
+      setUserIds([])
+      // search.reset()
+    } catch (error) {
+      console.log("删除用户有误:", error);
+
+    }
   }
 
   return (
@@ -179,7 +223,7 @@ export default function UserList() {
             <Button type='primary' onClick={handleCreate}>
               新增
             </Button>
-            <Button type='primary' danger>
+            <Button type='primary' danger onClick={handlePatchConfirm}>
               批量删除
             </Button>
           </div>
