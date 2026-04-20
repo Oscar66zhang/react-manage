@@ -114,7 +114,7 @@ export default function UserList() {
     {
       title: '操作',
       key: 'action',
-      render(record) {
+      render(record:User.UserItem) {
         return (
           <Space>
             <Button type='text' onClick={() => handleEdit(record)}>

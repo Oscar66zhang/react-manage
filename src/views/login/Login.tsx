@@ -19,7 +19,7 @@ export const Login = () => {
       const data = await api.login(values)
       setLoading(false)
       storage.set('token', data)
-      store.token = data
+      store.getState().updateToken(data)
       message.success('登录成功')
       const params = new URLSearchParams(location.search)
       location.href = params.get('callback') || '/welcome'
