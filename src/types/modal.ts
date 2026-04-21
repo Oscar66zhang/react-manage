@@ -1,30 +1,50 @@
-import { RefObject } from "react"
+import { RefObject } from 'react'
 import { User } from './api'
 
-/**
- * 弹窗操作类型
- * create：新增
- * edit：编辑
- * delete：删除
- */
+
+/** 弹窗操作类型：新增 / 编辑 / 删除 */
 export type IAction = 'create' | 'edit' | 'delete'
 
 /**
- * 弹窗组件的 Props 类型定义
- * 用于父组件控制弹窗，并在操作完成后刷新列表
+ * 通用弹窗组件 Props 类型
+ * @description 用于新增、编辑、删除等通用弹窗，支持所有业务模块
+ * @template T 列表项数据类型，默认 = User.UserItem
  */
-export interface IModalProp {
-	/**
-	 * 父组件调用弹窗的 ref 引用
-	 * 通过 current.open() 可主动打开弹窗并传参
-	 */
-	mRef: RefObject<{
-		open: (type: IAction, data: User.UserItem) => void
-	} | undefined>
+export interface IModalProp<T = User.UserItem> {
+  /**
+   * 父组件传入的 ref
+   * 用于调用子组件内部的 open 方法，打开弹窗
+   */
+  mRef: RefObject<{
+    /**
+     * 打开弹窗方法
+     * @param type 操作类型（新增/编辑/删除）
+     * @param data 操作的数据（编辑/删除时必传，新增时可不传）
+     */
+    open: (type: IAction, data?: T) => void
+  } | null>
 
-	/**
-	 * 操作完成后的回调
-	 * 一般用于重新请求列表数据、刷新页面
-	 */
-	update: () => void
+  /**
+   * 弹窗操作完成后的刷新列表方法
+   * 提交成功后调用，重新获取数据
+   */
+  update: () => void
+}
+
+/**
+ * 详情页弹窗 Props 类型
+ * @description 只用于查看详情，不需要 update 刷新
+ */
+export interface IDetailProp {
+  /**
+   * 父组件传入的 ref
+   * 用于调用子组件的 open 方法，打开详情弹窗
+   */
+  mRef: RefObject<{
+    /**
+     * 打开详情弹窗
+     * @param orderId 要查看的订单/数据ID
+     */
+    open: (orderId: string) => void
+  } | null>
 }

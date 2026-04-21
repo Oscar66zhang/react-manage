@@ -1,15 +1,20 @@
 import { Button, Form, Input, Space, Table } from "antd"
 import { useForm } from "antd/es/form/Form"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import type { ColumnsType } from 'antd/es/table';
 import api from "@/api/api"
 import { Dept } from "@/types/api"
 import CreateDept from "./CreateDept"
+import { IAction } from "@/types/modal"
 
 
 export default function DepList() {
     const [form] = useForm()
 
     const [data, setData] = useState<Dept.DeptItem[]>([])
+    const deptRef = useRef<{
+        open: (type: IAction, data?: Dept.EditParams) => void
+    } | null>(null)
 
     useEffect(() => {
         getDeptList()
@@ -20,7 +25,7 @@ export default function DepList() {
         setData(data)
     }
 
-    const columns = [
+    const columns: ColumnsType<Dept.DeptItem> = [
         {
             title: "部门名称",
             dataIndex: "deptName",
@@ -47,17 +52,32 @@ export default function DepList() {
             title: "操作",
             key: "action",
             width: 200,
-            render: () => {
+            render: (_, record) => {
                 return <Space>
-                    <Button type="text">新增</Button>
-                    <Button type="text">编辑</Button>
-                    <Button type="text">删除</Button>
+                    <Button type="text" onClick={handleCreate}>新增</Button>
+                    <Button type="text" onClick={() => handleEdit(record)}>编辑</Button>
+                    <Button type="text" onClick={handleDelete}>删除</Button>
                 </Space>
 
             }
         }
 
     ]
+
+    //创建部门
+    const handleCreate = () => {
+        deptRef.current?.open('create')
+    }
+
+    //编辑部门
+    const handleEdit = (record: Dept.DeptItem) => {
+        deptRef.current?.open('edit', record)
+    }
+
+    //删除部门
+    const handleDelete = () => {
+
+    }
 
     const handleSearch = () => {
         const params = form.getFieldsValue()
@@ -84,13 +104,13 @@ export default function DepList() {
                 <div className="header-wrapper">
                     <div className="title">部门列表</div>
                     <div className="action">
-                        <Button>新增</Button>
+                        <Button type="primary" onClick={handleCreate}>新增</Button>
                     </div>
                 </div>
                 <Table bordered rowKey='_id' dataSource={data} columns={columns} pagination={false} />
             </div>
 
-            <CreateDept />
+            <CreateDept mRef={deptRef} update={getDeptList} />
         </div>
     )
 }

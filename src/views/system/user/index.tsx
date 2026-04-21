@@ -16,7 +16,7 @@ export default function UserList() {
 
   const userRef = useRef<{
     open: (type: IAction, data?: User.UserItem) => void | undefined
-  }>()
+  } | null>(null)
 
   const [pagination, setPagination] = useState({
     current: 1,

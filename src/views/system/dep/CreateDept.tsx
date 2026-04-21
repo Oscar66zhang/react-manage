@@ -1,15 +1,30 @@
 import { Modal, Form, Input, Select, Upload, TreeSelect } from 'antd'
-import React, { useState } from 'react'
-import { IAction } from '@/types/modal'
+import React, { useImperativeHandle, useState } from 'react'
+import { IAction, IModalProp } from '@/types/modal'
 import { Dept } from '@/types/api'
 import { useForm } from 'antd/es/form/Form'
 
 
-const CreateDept = () => {
+const CreateDept = (props: IModalProp) => {
     const [form] = useForm()
 
     const [action, setAction] = useState<IAction>('create')
+    const [visible, setVisbile] = useState(false)
     const [deptList, setDeptList] = useState<Dept.DeptItem[]>([])
+    useImperativeHandle(props.mRef, () => ({
+        open
+    }))
+
+    //打开弹框函数
+    const open = (type: IAction, data?: Dept.EditParams | { parentId: string }): void => {
+        setAction(type)
+        setVisbile(true)
+        if (type == 'edit' && data) {
+            form.setFieldsValue(data)
+        } else {
+            form.resetFields()
+        }
+    }
 
 
     const handleSubmit = () => {
@@ -17,7 +32,8 @@ const CreateDept = () => {
     }
 
     const handleCancel = () => {
-
+      setVisbile(false)
+      form.resetFields()
     }
 
     return (
@@ -27,11 +43,11 @@ const CreateDept = () => {
             cancelText='取消'
             centered={true}
             width={800}
-            open={true}
+            open={visible}
             onOk={handleSubmit}
             onCancel={handleCancel}
         >
-            <Form form={form} labelAlign='right' labelCol={{span:4}}>
+            <Form form={form} labelAlign='right' labelCol={{ span: 4 }}>
                 <Form.Item name='userId' hidden>
                     <Input />
                 </Form.Item>
