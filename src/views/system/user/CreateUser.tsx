@@ -98,7 +98,7 @@ const CreateUser = (props: IModalProp) => {
 
   return (
     <Modal
-      title='创建用户'
+      title={action === 'create' ? '创建用户' : '编辑用户'}
       okText='确定'
       cancelText='取消'
       centered={true}

@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'
 import { Login } from '@/views/login/Login'
 import { Welcome } from '@/views/welcome'
 import User from '@/views/system/user'
+import Dept from '@/views/system/dep'
 import { NotFound } from '@/views/404'
 import { Forbidden } from '@/views/403'
 import Layout from '@/layout'
@@ -30,6 +31,10 @@ const routes = [
       {
         path: '/userList',
         element: <User />
+      },
+      {
+        path: '/deptList',
+        element: <Dept />
       }
     ]
   },
