@@ -1,4 +1,4 @@
-import { Button, Form, Input, Space, Table } from "antd"
+import { Button, Form, Input, message, Modal, Space, Table } from "antd"
 import { useForm } from "antd/es/form/Form"
 import { useEffect, useRef, useState } from "react"
 import type { ColumnsType } from 'antd/es/table';
@@ -6,6 +6,7 @@ import api from "@/api/api"
 import { Dept } from "@/types/api"
 import CreateDept from "./CreateDept"
 import { IAction } from "@/types/modal"
+import { formatDate } from "@/utils";
 
 
 export default function DepList() {
@@ -13,7 +14,7 @@ export default function DepList() {
 
     const [data, setData] = useState<Dept.DeptItem[]>([])
     const deptRef = useRef<{
-        open: (type: IAction, data?: Dept.EditParams) => void
+        open: (type: IAction, data?: Dept.EditParams | { parentId: string }) => void
     } | null>(null)
 
     useEffect(() => {
@@ -42,11 +43,17 @@ export default function DepList() {
             title: "更新时间",
             dataIndex: "updateTime",
             key: "updateTime",
+            render(updateTime) {
+                return formatDate(updateTime)
+            }
         },
         {
             title: "创建时间",
             dataIndex: "createTime",
             key: "createTime",
+            render(createTime) {
+                return formatDate(createTime)
+            }
         },
         {
             title: "操作",
@@ -54,9 +61,9 @@ export default function DepList() {
             width: 200,
             render: (_, record) => {
                 return <Space>
-                    <Button type="text" onClick={handleCreate}>新增</Button>
+                    <Button type="text" onClick={() => handleSubCreate(record._id)}>新增</Button>
                     <Button type="text" onClick={() => handleEdit(record)}>编辑</Button>
-                    <Button type="text" onClick={handleDelete}>删除</Button>
+                    <Button type="text" onClick={() => handleDelete(record._id)}>删除</Button>
                 </Space>
 
             }
@@ -69,14 +76,32 @@ export default function DepList() {
         deptRef.current?.open('create')
     }
 
+
+    const handleSubCreate = (id: string) => {
+        deptRef.current?.open('create', { parentId: id })
+    }
+
     //编辑部门
     const handleEdit = (record: Dept.DeptItem) => {
         deptRef.current?.open('edit', record)
     }
 
     //删除部门
-    const handleDelete = () => {
+    const handleDelete = (id: string) => {
+        Modal.confirm({
+            title: "确认",
+            content: "确认删除该部门吗?",
+            onOk() {
+                handleDeleteSubmit(id);
+            }
+        })
+    }
 
+    //删除提交
+    const handleDeleteSubmit = async (_id: string) => {
+        await api.deleteDept({ _id })
+        message.success('删除成功')
+        getDeptList()
     }
 
     const handleSearch = () => {

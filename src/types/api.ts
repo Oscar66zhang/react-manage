@@ -94,6 +94,11 @@ export namespace Dept {
 		_id: string
 	}
 
+	export interface DelParams {
+		_id: string
+	}
+
+
 	export interface DeptItem {
 		_id: string,
 		createTime: string,
