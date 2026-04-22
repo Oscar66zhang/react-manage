@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { Dashboard, Login, Result, ResultData, User, Dept } from '@/types/api'
+import { Dashboard, Login, Result, ResultData, User, Dept, Menu } from '@/types/api'
 export default {
   login(params: Login.params) {
     return request.post<string>('/users/login', params, { showLoading: false, showError: false })
@@ -70,5 +70,25 @@ export default {
   //删除部门
   deleteDept(params: Dept.DelParams) {
     return request.post('/dept/delete', params)
+  },
+
+  //菜单管理
+
+  //菜单列表
+  getMenuList(params?: Menu.Params) {
+    return request.get<Menu.MenuItem[]>('/menu/list', params)
+  },
+
+  //创建菜单
+  createMenu(params: Menu.CreateParams) {
+    return request.post('/menu/create', params)
+  },
+  //编辑菜单
+  editMenu(params: Menu.EditParams) {
+    return request.post('/menu/edit', params)
+  },
+  //删除菜单
+  deleteMenu(params: Menu.DelParams) {
+    return request.post('/menu/delete', params)
   }
 }

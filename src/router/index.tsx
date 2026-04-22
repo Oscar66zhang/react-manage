@@ -3,6 +3,7 @@ import { Login } from '@/views/login/Login'
 import { Welcome } from '@/views/welcome'
 import User from '@/views/system/user'
 import Dept from '@/views/system/dep'
+import Menu from '@/views/system/menu'
 import { NotFound } from '@/views/404'
 import { Forbidden } from '@/views/403'
 import Layout from '@/layout'
@@ -35,6 +36,10 @@ const routes = [
       {
         path: '/deptList',
         element: <Dept />
+      },
+      {
+        path: '/menuList',
+        element: <Menu />
       }
     ]
   },
