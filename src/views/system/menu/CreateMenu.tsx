@@ -7,7 +7,7 @@ import api from '@/api/api'
 import { InfoCircleOutlined } from '@ant-design/icons'
 
 
-const CreateMenu = (props: IMenuModalProp) => {
+const CreateMenu = (props: IMenuModalProp<Menu.MenuItem>) => {
     const [form] = useForm()
 
     const [action, setAction] = useState<IAction>('create')
@@ -130,7 +130,7 @@ const CreateMenu = (props: IMenuModalProp) => {
                 </Form.Item>
 
 
-                <Form.Item label='排序' name='sort' tooltip={{ title: "排序值越大越靠后", icon: <InfoCircleOutlined /> }}>
+                <Form.Item label='排序' name='orderBy' tooltip={{ title: "排序值越大越靠后", icon: <InfoCircleOutlined /> }}>
                     <InputNumber placeholder='请输入排序值' />
                 </Form.Item>
 

@@ -63,7 +63,7 @@ export default function DepList() {
                 return <Space>
                     <Button type="text" onClick={() => handleSubCreate(record._id)}>新增</Button>
                     <Button type="text" onClick={() => handleEdit(record)}>编辑</Button>
-                    <Button type="text" onClick={() => handleDelete(record._id)}>删除</Button>
+                    <Button type="text" danger onClick={() => handleDelete(record._id)}>删除</Button>
                 </Space>
 
             }

@@ -5,7 +5,7 @@ import { Watermark } from 'antd'
 import NavHeader from '@/components/NavHeader'
 import NavFooter from '@/components/NavFooter'
 import Menu from '@/components/Menu'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useRouteLoaderData } from 'react-router-dom'
 import api from '@/api/api'
 // import storage from '@/utils/storage'
 import store from '@/store'
@@ -26,6 +26,10 @@ const App: React.FC = () => {
   const {
     token: { colorBgContainer }
   } = theme.useToken()
+
+
+ const data = useRouteLoaderData('layout')
+ console.log(data)
 
   return (
     <Watermark content='React'>

@@ -14,11 +14,11 @@ export default function MenuList() {
 
     const [data, setData] = useState<Menu.MenuItem[]>([])
     const menuRef = useRef<{
-        open: (type: IAction, data?: Menu.EditParams | { parentId: string }) => void
+        open: (type: IAction, data?: Menu.EditParams | { parentId?: string; orderBy?: number }) => void
     } | null>(null)
 
     useEffect(() => {
-        getMenuList()
+        getMenuList() 
     }, [])
 
     const getMenuList = async () => {
@@ -80,9 +80,9 @@ export default function MenuList() {
             width: 200,
             render: (_, record) => {
                 return <Space>
-                    <Button type="text" onClick={() => handleSubCreate(record._id)}>新增</Button>
+                    <Button type="text" onClick={() => handleSubCreate(record)}>新增</Button>
                     <Button type="text" onClick={() => handleEdit(record)}>编辑</Button>
-                    <Button type="text" onClick={() => handleDelete(record._id)}>删除</Button>
+                    <Button type="text" danger onClick={() => handleDelete(record)}>删除</Button>
                 </Space>
 
             }
@@ -92,12 +92,12 @@ export default function MenuList() {
 
     //创建部门
     const handleCreate = () => {
-        menuRef.current?.open('create')
+        menuRef.current?.open('create', { parentId: '', orderBy: data.length })
     }
 
 
-    const handleSubCreate = (id: string) => {
-        menuRef.current?.open('create', { parentId: id })
+    const handleSubCreate = (record: Menu.MenuItem) => {
+        menuRef.current?.open('create', { parentId: record._id, orderBy: record.children?.length })
     }
 
     //编辑部门
@@ -106,19 +106,23 @@ export default function MenuList() {
     }
 
     //删除部门
-    const handleDelete = (id: string) => {
+    const handleDelete = (record: Menu.MenuItem) => {
+        let text = ''
+        if (record.menuType === 1) text = '菜单'
+        if (record.menuType === 2) text = '按钮'
+        if (record.menuType === 3) text = '页面'
         Modal.confirm({
             title: "确认",
-            content: "确认删除该部门吗?",
+            content: `确认删除该${text}吗?`,
             onOk() {
-                handleDeleteSubmit(id);
+                handleDeleteSubmit(record._id);
             }
         })
     }
 
     //删除提交
     const handleDeleteSubmit = async (_id: string) => {
-        await api.deleteDept({ _id })
+        await api.deleteMenu({ _id })
         message.success('删除成功')
         getMenuList()
     }
@@ -133,9 +137,9 @@ export default function MenuList() {
 
     return (
         <div>
-            <Form className="search-form" layout="inline">
+            <Form className="search-form" layout="inline" form={form} initialValues={{ menuState: 1 }}>
                 <Form.Item name="menuName" label="菜单名称">
-                    <Input placeholder="请输入部门名称" />
+                    <Input placeholder="请输入菜单名称" />
                 </Form.Item>
 
                 <Form.Item name="menuState" label="菜单状态">
@@ -164,7 +168,7 @@ export default function MenuList() {
                 <Table bordered rowKey='_id' dataSource={data} columns={columns} pagination={false} />
             </div>
 
-          <CreateMenu mRef={menuRef} update={getMenuList} />
+            <CreateMenu mRef={menuRef} update={getMenuList} />
 
         </div>
     )

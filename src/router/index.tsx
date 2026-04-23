@@ -8,6 +8,7 @@ import { NotFound } from '@/views/404'
 import { Forbidden } from '@/views/403'
 import Layout from '@/layout'
 import DashBoard from '@/views/dashboard'
+import AuthLoader from './AuthLoader'
 
 const routes = [
   {
@@ -19,6 +20,8 @@ const routes = [
     element: <Login />
   },
   {
+    id: 'layout',
+    loader: AuthLoader,
     element: <Layout />,
     children: [
       {
