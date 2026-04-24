@@ -43,14 +43,20 @@ const SideMenu = () => {
   //递归生成菜单
   const getTreeMenu = (menuList: IMenu.MenuItem[], treeList: MenuItem[] = []) => {
     menuList.forEach((item, index) => {
-      if (item.menuType === 1) {
+      if (item.menuType === 1 && item.menuState === 1) {
         if (item.buttons) return treeList.push(getItem(item.menuName, item.path || index, createIcon(item.icon)))
-        treeList.push(getItem(item.menuName, item.path || index, createIcon(item.icon), getTreeMenu(item.children || [])))
+        if (item.path) {
+          treeList.push(getItem(item.menuName, item.path, createIcon(item.icon)))
+        } else {
+          treeList.push(
+            getItem(item.menuName, item._id, createIcon(item.icon), getTreeMenu(item.children || []))
+          )
+        }
       }
     })
     return treeList
   }
-
+  //菜单点击
   const handleClickMenu: MenuProps['onClick'] = ({ key }: { key: string }) => {
     console.log("调用点击事件");
     
@@ -69,7 +75,7 @@ const SideMenu = () => {
   }, [data])
 
 
-
+  //Logo点击
   const handleClickLogo = () => {
     navigate('/welcome')
   }
