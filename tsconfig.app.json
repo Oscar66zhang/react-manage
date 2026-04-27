@@ -20,7 +20,6 @@
       "@/*": ["src/*"]
     },
 
-    // 👇 就加这一行
     "forceConsistentCasingInFileNames": true,
     "ignoreDeprecations": "6.0"
   },
