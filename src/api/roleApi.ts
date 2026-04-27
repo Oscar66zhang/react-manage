@@ -12,5 +12,9 @@ export default {
   //编辑角色
   editRole(params: Role.EditParams) {
     return request.post('/roles/edit', params)
+  },
+  //删除角色
+  deleteRole(params: { _id: string }) {
+    return request.post('/roles/delete', params)
   }
 }

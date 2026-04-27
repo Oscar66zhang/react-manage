@@ -1,6 +1,6 @@
 import api from '@/api/roleApi'
 import { useAntdTable } from 'ahooks'
-import { Button, Table, Form, Input, Space } from 'antd'
+import { Button, Table, Form, Input, Space, Modal, message } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { useRef } from 'react'
 import { Role } from '@/types/api'
@@ -33,7 +33,7 @@ export default function RoleList() {
     defaultPageSize: 10
   })
 
-  const columns = [
+  const columns: ColumnsType<Role.RoleItem> = [
     {
       title: '角色名称',
       dataIndex: 'roleName',
@@ -68,7 +68,7 @@ export default function RoleList() {
           <Space>
             <Button onClick={() => handleEdit(record)}>编辑</Button>
             <Button>设置权限</Button>
-            <Button>删除</Button>
+            <Button onClick={() => handleDelete(record._id)} danger>删除</Button>
           </Space>
         )
       }
@@ -88,6 +88,19 @@ export default function RoleList() {
   //编辑角色
   const handleEdit = (data: Role.RoleItem) => {
     roleRef.current?.open('edit', data)
+  }
+
+  //删除角色
+  const handleDelete = (_id: string) => {
+    Modal.confirm({
+      title: '确认删除',
+      content: <span>确认删除该角色吗？</span>,
+      onOk: () => {
+        api.deleteRole({ _id })
+        message.success('删除成功')
+        search.submit()
+      }
+    })
   }
 
   return (
