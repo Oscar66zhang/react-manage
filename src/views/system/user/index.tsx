@@ -6,6 +6,7 @@ import { formatDate } from '@/utils/index'
 import CreateUser from './CreateUser'
 import { IAction } from '@/types/modal'
 import { message } from '@/utils/AntdGlobal'
+import { useAntdTable } from 'ahooks'
 
 export default function UserList() {
   const [form] = Form.useForm()
@@ -17,6 +18,27 @@ export default function UserList() {
   const userRef = useRef<{
     open: (type: IAction, data?: User.UserItem) => void | undefined
   } | null>(null)
+
+
+    const getTableData = ({ current, pageSize }: { current: number; pageSize: number }, formData: User.SearchParams) => {
+    return api
+      .getUserList({
+        ...formData,
+        pageNum: current,
+        pageSize: pageSize
+      })
+      .then(data => {
+        return {
+          total: data.page.total,
+          list: data.list
+        }
+      })
+  }
+
+    const { tableProps, search } = useAntdTable(getTableData, {
+    form,
+    defaultPageSize: 10
+  })
 
   const [pagination, setPagination] = useState({
     current: 1,
@@ -231,26 +253,15 @@ export default function UserList() {
         <Table
           rowKey='userId'
           bordered
-          rowSelection={{ type: 'checkbox' }}
-          dataSource={data}
-          columns={columns}
-          pagination={{
-            position: ['bottomRight'],
-            current: pagination.current,
-            pageSize: pagination.pageSize,
-            total,
-            showQuickJumper: true,
-            showSizeChanger: true,
-            showTotal: function (total) {
-              return `总共${total}条`
-            },
-            onChange: (page, pageSize) => {
-              setPagination({
-                current: page,
-                pageSize
-              })
-            }
+          rowSelection={{ 
+            type: 'checkbox',
+            selectedRowKeys: userIds,
+            onChange:(selectedRowsKeys:React.Key[])=>{
+              setUserIds(selectedRowsKeys as number[])
+            } 
           }}
+          columns={columns}
+          {...tableProps}
         />
         ;
       </div>

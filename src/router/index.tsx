@@ -4,6 +4,7 @@ import { Welcome } from '@/views/welcome'
 import User from '@/views/system/user'
 import Dept from '@/views/system/dep'
 import Menu from '@/views/system/menu'
+import Role from '@/views/system/role'
 import { NotFound } from '@/views/404'
 import { Forbidden } from '@/views/403'
 import Layout from '@/layout'
@@ -43,6 +44,10 @@ const routes = [
       {
         path: '/menuList',
         element: <Menu />
+      },
+      {
+        path: '/roleList',
+        element: <Role />,
       }
     ]
   },
