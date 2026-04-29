@@ -11,7 +11,7 @@ import Layout from '@/layout'
 import DashBoard from '@/views/dashboard'
 import AuthLoader from './AuthLoader'
 
-const routes = [
+export const routes = [
   {
     path: '/',
     element: <Navigate to='/welcome' />
@@ -43,7 +43,10 @@ const routes = [
       },
       {
         path: '/menuList',
-        element: <Menu />
+        element: <Menu />,
+        meta: {
+          auth: false
+        }
       },
       {
         path: '/roleList',

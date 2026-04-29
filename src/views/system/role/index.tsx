@@ -6,12 +6,20 @@ import { useRef } from 'react'
 import { Role } from '@/types/api'
 import { formatDate } from '@/utils/index'
 import CreateRole from './CreateRole'
+import SetPermission from './SetPermission'
 import { IAction } from '@/types/modal'
+
+
 
 export default function RoleList() {
   const [form] = Form.useForm()
 
   const roleRef = useRef<{
+    open: (type: IAction, data?: Role.RoleItem) => void
+  } | null>(null)
+
+
+  const permissionRef = useRef<{
     open: (type: IAction, data?: Role.RoleItem) => void
   } | null>(null)
 
@@ -66,9 +74,9 @@ export default function RoleList() {
       render: (_: unknown, record: Role.RoleItem) => {
         return (
           <Space>
-            <Button onClick={() => handleEdit(record)}>编辑</Button>
-            <Button>设置权限</Button>
-            <Button onClick={() => handleDelete(record._id)} danger>删除</Button>
+            <Button type='text' onClick={() => handleEdit(record)}>编辑</Button>
+            <Button type='text' onClick={() => handleSetPermission(record)}>设置权限</Button>
+            <Button type='text' onClick={() => handleDelete(record._id)} danger>删除</Button>
           </Space>
         )
       }
@@ -90,6 +98,11 @@ export default function RoleList() {
     roleRef.current?.open('edit', data)
   }
 
+  //设置权限
+  const handleSetPermission = (record: Role.RoleItem) => {
+    permissionRef.current?.open('edit', record)
+  }
+
   //删除角色
   const handleDelete = (_id: string) => {
     Modal.confirm({
@@ -102,6 +115,7 @@ export default function RoleList() {
       }
     })
   }
+
 
   return (
     <div className='role-wrap'>
@@ -137,6 +151,9 @@ export default function RoleList() {
       </div>
       {/* 创建角色组件弹框 */}
       <CreateRole mRef={roleRef} update={search.submit} />
+
+      {/* 设置权限 */}
+      <SetPermission mRef={permissionRef} update={search.submit} />
     </div>
   )
 }

@@ -189,7 +189,17 @@ export namespace Role {
     updateTime: string
     createTime: string
   }
+
   export interface EditParams extends CreateParams {
     _id: string
   }
+
+  export interface Permission {
+    _id: string
+    permissionList: {
+      checkedKeys: string[]
+      halfCheckedKeys: string[]
+    }
+  }
+  
 }

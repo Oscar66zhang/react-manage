@@ -58,8 +58,6 @@ const SideMenu = () => {
   }
   //菜单点击
   const handleClickMenu: MenuProps['onClick'] = ({ key }: { key: string }) => {
-    console.log("调用点击事件");
-    
     setSelectedKeys([key])
     navigate(key)
   }
