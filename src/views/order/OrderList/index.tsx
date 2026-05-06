@@ -3,18 +3,21 @@ import { useEffect, useRef, useState } from 'react'
 import api from '@/api/api'
 import { PageParams, User } from '@/types/api'
 import { formatDate } from '@/utils/index'
-import CreateUser from './CreateUser'
 import { IAction } from '@/types/modal'
 import { message } from '@/utils/AntdGlobal'
 import { useAntdTable } from 'ahooks'
 import AuthButton from '@/components/AuthButton'
-
+import { Order } from '@/types/api'
+import { ColumnsType } from 'antd/es/table'
+import orderApi from '@/api/orderApi'
+import CreateOrder from './components/CreateOrder'
 
 export default function OrderList() {
     const [form] = Form.useForm()
-    const getTableData = ({ current, pageSize }: { current: number; pageSize: number }, formData: User.SearchParams) => {
-        return api
-            .getUserList({
+    const orderRef = useRef<{ open: () => void } | null>(null)
+    const getTableData = ({ current, pageSize }: { current: number; pageSize: number }, formData: Order.SearchParams) => {
+        return orderApi
+            .getOrderList({
                 ...formData,
                 pageNum: current,
                 pageSize: pageSize
@@ -29,7 +32,14 @@ export default function OrderList() {
 
     const { tableProps, search } = useAntdTable(getTableData, {
         form,
-        defaultPageSize: 10
+        defaultParams: [
+            {
+                current: 1, pageSize: 10
+            }, {
+                state: 1
+            }
+
+        ]
     })
 
     const columns: ColumnsType<Order.OrderItem> = [
@@ -77,40 +87,53 @@ export default function OrderList() {
             title: '操作',
             dataIndex: 'action',
             key: 'action',
-            render: (_,record: Order.OrderItem) => {
-                return <Button type='primary' onClick={() => handleEdit(record)}>编辑</Button>
+            render: (_, record: Order.OrderItem) => {
+                return (
+                    <Space>
+                        <Button type='text'>详情</Button>
+                        <Button type='text'>打点</Button>
+                        <Button type='text'>轨迹</Button>
+                        <Button type='text' danger>删除</Button>
+                    </Space>
+                )
             }
         }
     ]
 
+    //创建订单
+    const handleCreate = () => {
+        orderRef?.current?.open()
+    }
+
+
     return (
         <div className='OrderList'>
             <Form className='search-form' form={form} layout='inline'>
-                <Form.Item name='userId' label='用户ID'>
-                    <Input placeholder='请输入用户ID' />
+                <Form.Item name='orderId' label='订单ID'>
+                    <Input placeholder='请输入订单ID' />
                 </Form.Item>
                 <Form.Item name='userName' label='用户名称'>
                     <Input placeholder='请输入用户名称' />
                 </Form.Item>
-                <Form.Item name='userName' label='状态'>
+                <Form.Item name='state' label='订单状态'>
                     <Select
                         style={{ width: 120 }}
                         defaultValue={'0'}
                         options={[
-                            { value: '0', label: '所有' },
-                            { value: '1', label: '在职' },
-                            { value: '2', label: '试用期' },
-                            { value: '3', label: '离职' }
+                            { value: 1, label: '进行中' },
+                            { value: 2, label: '已完成' },
+                            { value: 3, label: '超时' },
+                            { value: 4, label: '取消' }
                         ]}
                     ></Select>
                 </Form.Item>
 
                 <Form.Item>
                     <Space>
-                        <Button type='primary' onClick={handleSearch}>
+                        <Button type='primary' onClick={search.submit}>
                             搜索
                         </Button>
-                        <Button type='default' onClick={handleReset}>
+                        <Button type='default' onClick={search.reset}>
                             重置
                         </Button>
                     </Space>
@@ -120,7 +143,7 @@ export default function OrderList() {
                 <div className='header-wrapper'>
                     <div className='title'>用户列表</div>
                     <div className='action'>
-                        <Button type='primary'>
+                        <Button type='primary' onClick={handleCreate}>
                             新增
                         </Button>
                     </div>
@@ -131,17 +154,9 @@ export default function OrderList() {
                     columns={columns}
                     {...tableProps}
                 />
-                ;
             </div>
-            <CreateUser
-                mRef={userRef}
-                update={() => {
-                    getUserList({
-                        pageNum: 1,
-                        pageSize: pagination.pageSize
-                    })
-                }}
-            />
+            {/* 创建订单组件 */}
+             <CreateOrder mRef={orderRef} update={search.submit} />
         </div>
     )
 } 

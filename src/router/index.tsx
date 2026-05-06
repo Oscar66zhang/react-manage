@@ -10,6 +10,7 @@ import { Forbidden } from '@/views/403'
 import Layout from '@/layout'
 import DashBoard from '@/views/dashboard'
 import AuthLoader from './AuthLoader'
+import OrderList from '@/views/order/OrderList'
 
 export const routes = [
   {
@@ -51,7 +52,11 @@ export const routes = [
       {
         path: '/roleList',
         element: <Role />,
-      }
+      },
+      {
+        path: '/orderList',
+        element: <OrderList />
+      },
     ]
   },
   {
