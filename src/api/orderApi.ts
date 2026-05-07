@@ -25,5 +25,8 @@ export default {
   //删除订单
   delOrder(orderId: string) {
     return request.post('/order/delete', { _id: orderId })
+  },
+  exportData(params: Order.SearchParams) {
+    return request.downloadFile('/order/orderExport', params)
   }
 }

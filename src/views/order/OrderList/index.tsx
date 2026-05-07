@@ -147,16 +147,21 @@ export default function OrderList() {
   }
 
   //删除确认
-  const handleDel = (orderId: string) => {
+  const handleDel = (_id: string) => {
     Modal.confirm({
       title: '确认',
       content: <span>确认删除订单吗?</span>,
       onOk: async () => {
-        await orderApi.delOrder(orderId)
+        await orderApi.delOrder(_id)
         message.success('删除成功')
         search.submit()
-      } 
+      }
     })
+  }
+
+  //文件导出
+  const handleExport = async () => {
+    await orderApi.exportData(form.getFieldsValue())
   }
 
   return (
@@ -198,6 +203,10 @@ export default function OrderList() {
           <div className='action'>
             <Button type='primary' onClick={handleCreate}>
               新增
+            </Button>
+
+            <Button type='primary' onClick={handleExport}>
+              导出
             </Button>
           </div>
         </div>
