@@ -51,8 +51,18 @@ const CreateOrder = (props: IModalProp) => {
             <Form form={form} layout='horizontal' labelAlign='right' labelCol={{ span: 8 }} wrapperCol={{ span: 16 }}>
                 <Row>
                     <Col span={12}>
-                        <Form.Item name='cityName' label='城市名称' rules={[{ required: true, message: '请选择城市' }]}>
-                            <Select placeholder='请选择城市' options={[]} />
+                        <Form.Item
+                            name='cityName'
+                            label='城市名称'
+                            rules={[{ required: true, message: '请选择城市' }]}
+                        >
+                            <Select
+                                placeholder="请选择城市"
+                                options={cityList.map(item => ({
+                                    value: item.id,
+                                    label: item.name
+                                }))}
+                            />
                         </Form.Item>
                     </Col>
 

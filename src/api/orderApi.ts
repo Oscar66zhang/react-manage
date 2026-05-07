@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { Order, ResultData } from '@/types/api'
+import { Order, ResultData, Role } from '@/types/api'
 
 export default {
     //获取订单列表
@@ -8,10 +8,10 @@ export default {
     },
     //获取城市列表
     getCityList() {
-        return request.get<ResultData<Order.DictItem>>('/order/cityList')
+        return request.get<Order.DictItem[]>('/order/cityList')
     },
     //获取车型列表
     getVehicleList() {
-        return request.get<ResultData<Order.DictItem>>('/order/vehicleList')
+        return request.get<Order.DictItem[]>('/order/vehicleList')
     }
 }
