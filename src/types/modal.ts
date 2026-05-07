@@ -1,7 +1,6 @@
 import { RefObject } from 'react'
 import { User, Menu } from './api'
 
-
 /** 弹窗操作类型：新增 / 编辑 / 删除 */
 export type IAction = 'create' | 'edit' | 'delete'
 
@@ -47,15 +46,12 @@ export interface IDetailProp {
      */
     open: (orderId: string) => void
   } | null>
-
 }
 
-
-
 /**
- * 通用弹窗组件 Props 类型
- * @description 用于新增、编辑、删除等通用弹窗，支持所有业务模块
- * @template T 列表项数据类型，默认 = User.UserItem
+ * 菜单弹窗组件 Props 类型
+ * @description 用于新增、编辑、删除等通用弹窗，支持菜单业务模块
+ * @template T 列表项数据类型，默认 = Menu.MenuItem
  */
 export interface IMenuModalProp<T = Menu.MenuItem> {
   /**

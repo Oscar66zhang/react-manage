@@ -1,8 +1,9 @@
-import { Modal, Form, Row, Col, Select, Input, DatePicker } from 'antd'
+import { Modal, Form, Row, Col, Select, Input, DatePicker, message } from 'antd'
 import { IModalProp } from '@/types/modal'
 import { useEffect, useImperativeHandle, useState } from 'react'
 import api from '@/api/orderApi'
 import { Order } from '@/types/api'
+
 
 const CreateOrder = (props: IModalProp) => {
   const [visible, setVisible] = useState(false)
@@ -15,16 +16,16 @@ const CreateOrder = (props: IModalProp) => {
   }, [])
 
   const getInitData = async () => {
-    const cityList = await api.getCityList()
-    const vehicleList = await api.getVehicleList()
-    setCityList(cityList)
-    setVehicleList(vehicleList)
+    const cityRes = await api.getCityList()
+    const vehicleRes = await api.getVehicleList()
+    setCityList(cityRes)
+    setVehicleList(vehicleRes)
   }
 
   useImperativeHandle(props.mRef, () => {
     return {
       open
-    }
+    } 
   })
 
   const open = () => {
@@ -32,12 +33,16 @@ const CreateOrder = (props: IModalProp) => {
   }
 
   const handleCancel = () => {
+    form.resetFields()
     setVisible(false)
   }
   const handleOk = async () => {
     const valid = await form.validateFields()
     if (valid) {
-      api.createOrder(form.getFieldsValue())
+      await api.createOrder(form.getFieldsValue())
+      message.success('创建成功')
+      handleCancel()
+      props.update()
     }
   }
 
@@ -59,7 +64,8 @@ const CreateOrder = (props: IModalProp) => {
                 placeholder='请选择城市'
                 options={cityList.map(item => ({
                   value: item.id,
-                  label: item.name
+                  label: item.name,
+                  key:item.id
                 }))}
               />
             </Form.Item>
@@ -71,7 +77,8 @@ const CreateOrder = (props: IModalProp) => {
                 placeholder='请选择城市'
                 options={vehicleList.map(item => ({
                   value: item.id,
-                  label: item.name
+                  label: item.name,
+                   key:item.id
                 }))}
               />
             </Form.Item>
