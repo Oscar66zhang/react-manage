@@ -112,7 +112,9 @@ export default function OrderList() {
       render: (_, record: Order.OrderItem) => {
         return (
           <Space>
-            <Button type='text'>详情</Button>
+            <Button type='text' onClick={() => handleDetail(record.orderId)}>
+              详情
+            </Button>
             <Button type='text'>打点</Button>
             <Button type='text'>轨迹</Button>
             <Button type='text' danger>
@@ -127,6 +129,11 @@ export default function OrderList() {
   //创建订单
   const handleCreate = () => {
     orderRef?.current?.open()
+  }
+
+  //订单详情
+  const handleDetail = (orderId: string) => {
+    detailRef.current?.open(orderId)
   }
 
   return (
@@ -171,12 +178,12 @@ export default function OrderList() {
             </Button>
           </div>
         </div>
-        <Table rowKey='userId' bordered columns={columns} {...tableProps} />
+        <Table rowKey='_id' bordered columns={columns} {...tableProps} />
       </div>
       {/* 创建订单组件 */}
       <CreateOrder mRef={orderRef} update={search.submit} />
       {/* 订单详情 */}
-      <OrderDetail  mRef={orderRef} />
+      <OrderDetail mRef={detailRef} />
     </div>
   )
 }
