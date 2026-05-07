@@ -1,4 +1,4 @@
-import { Button, Table, Form, Input, Space, Select, Modal } from 'antd'
+import { Button, Table, Form, Input, Space, Select, Modal, message } from 'antd'
 import { useEffect, useRef, useState } from 'react'
 import { PageParams, User } from '@/types/api'
 import { formatDate, formatMoney } from '@/utils/index'
@@ -8,11 +8,14 @@ import { ColumnsType } from 'antd/es/table'
 import orderApi from '@/api/orderApi'
 import CreateOrder from './components/CreateOrder'
 import OrderDetail from './components/OrderDetail'
+import OrderMarker from './components/OrderMarker'
 
 export default function OrderList() {
   const [form] = Form.useForm()
   const orderRef = useRef<{ open: () => void } | null>(null)
   const detailRef = useRef<{ open: (orderId: string) => void } | null>(null)
+  const markerRef = useRef<{ open: (orderId: string) => void } | null>(null)
+
   const getTableData = ({ current, pageSize }: { current: number; pageSize: number }, formData: Order.SearchParams) => {
     return orderApi
       .getOrderList({
@@ -115,9 +118,11 @@ export default function OrderList() {
             <Button type='text' onClick={() => handleDetail(record.orderId)}>
               详情
             </Button>
-            <Button type='text'>打点</Button>
+            <Button type='text' onClick={() => handleMarker(record.orderId)}>
+              打点
+            </Button>
             <Button type='text'>轨迹</Button>
-            <Button type='text' danger>
+            <Button type='text' onClick={() => handleDel(record.orderId)} danger>
               删除
             </Button>
           </Space>
@@ -134,6 +139,24 @@ export default function OrderList() {
   //订单详情
   const handleDetail = (orderId: string) => {
     detailRef.current?.open(orderId)
+  }
+
+  //地图打点
+  const handleMarker = (orderId: string) => {
+    markerRef.current?.open(orderId)
+  }
+
+  //删除确认
+  const handleDel = (orderId: string) => {
+    Modal.confirm({
+      title: '确认',
+      content: <span>确认删除订单吗?</span>,
+      onOk: async () => {
+        await orderApi.delOrder(orderId)
+        message.success('删除成功')
+        search.submit()
+      } 
+    })
   }
 
   return (
@@ -184,6 +207,8 @@ export default function OrderList() {
       <CreateOrder mRef={orderRef} update={search.submit} />
       {/* 订单详情 */}
       <OrderDetail mRef={detailRef} />
+      {/* 地图打点 */}
+      <OrderMarker mRef={markerRef} />
     </div>
   )
 }

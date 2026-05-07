@@ -21,5 +21,9 @@ export default {
   //获取订单详情
   getOrderDetail(orderId: string) {
     return request.get<Order.OrderItem>(`/order/detail/${orderId}`)
+  },
+  //删除订单
+  delOrder(orderId: string) {
+    return request.post('/order/delete', { _id: orderId })
   }
 }
