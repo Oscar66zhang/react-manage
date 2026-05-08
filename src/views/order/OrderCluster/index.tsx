@@ -6,7 +6,6 @@ import 'leaflet.markercluster'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 
-// 修复 Vite 打包时 Leaflet 默认图标路径丢失问题
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
 import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
@@ -23,32 +22,68 @@ const OrderCluster = () => {
   const mapRef = useRef<L.Map | null>(null)
   const clusterGroupRef = useRef<any>(null)
 
+  // 城市坐标配置
+  const cityCenterMap: any = {
+    10001: [28.2282, 112.9388], // 长沙
+    10002: [30.5928, 114.3055], // 武汉
+    10003: [30.2795, 120.1538], // 杭州
+    10004: [23.1292, 114.4161], // 惠州
+    10005: [25.0458, 102.7095], // 昆明
+  }
+
   useEffect(() => {
     renderMap()
+    getCityData()
     return () => {
       if (mapRef.current) {
         mapRef.current.remove()
         mapRef.current = null
       }
     }
-  }, [cityId])
+  }, [])
 
+  // 切换 cityId 重新加载 + 飞过去
   useEffect(() => {
-    getCityData()
+    if (mapRef.current) {
+      getCityData()
+
+      // 切换后地图飞到当前城市坐标
+      const center = cityCenterMap[cityId]
+      if (center) {
+        mapRef.current.setView(center, 12)
+      }
+    }
   }, [cityId])
 
   const getCityData = async () => {
-    const data = (await api.getCityData(cityId)) as { lng: string; lat: string }[]
-    console.log(data)
+    const res: any = await api.getCityData(cityId)
+
+    const clusters = res.data?.clusters || []
+
     if (!clusterGroupRef.current || !mapRef.current) return
 
     clusterGroupRef.current.clearLayers()
     const markers: L.Marker[] = []
 
-    data.forEach((item: { lng: string; lat: string }) => {
-      const marker = L.marker([parseFloat(item.lat), parseFloat(item.lng)])
-      markers.push(marker)
-      clusterGroupRef.current.addLayer(marker)
+    clusters.forEach((cluster: any) => {
+      cluster.points?.forEach((point: any) => {
+        const lat = Number(point.lat)
+        const lng = Number(point.lng)
+
+        // 过滤非法坐标
+        if (isNaN(lat) || isNaN(lng)) return
+
+        const marker = L.marker([lat, lng])
+          .bindPopup(`
+            <div style="line-height: 1.8">
+              <b style="color: #1677ff">订单号:</b> ${point.orderId}<br/>
+              <b>用户名:</b> ${point.userName}<br/>
+              <b>地址:</b> ${point.address}
+            </div>
+          `)
+        markers.push(marker)
+        clusterGroupRef.current.addLayer(marker)
+      })
     })
 
     if (markers.length > 0) {
