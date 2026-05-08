@@ -11,6 +11,7 @@ import Layout from '@/layout'
 import DashBoard from '@/views/dashboard'
 import AuthLoader from './AuthLoader'
 import OrderList from '@/views/order/OrderList'
+import OrderCluster from '@/views/order/OrderCluster'
 
 export const routes = [
   {
@@ -57,6 +58,10 @@ export const routes = [
         path: '/orderList',
         element: <OrderList />
       },
+      {
+        path: '/cluster',
+        element: <OrderCluster />
+      }
     ]
   },
   {

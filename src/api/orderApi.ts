@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-import { Order, ResultData, Role } from '@/types/api'
+import { Order, ResultData } from '@/types/api'
 
 export default {
   //获取订单列表
@@ -26,7 +26,12 @@ export default {
   delOrder(orderId: string) {
     return request.post('/order/delete', { _id: orderId })
   },
+  //导出数据
   exportData(params: Order.SearchParams) {
-    return request.downloadFile('/order/orderExport', params)
+    return request.downloadFile('/order/orderExport', params, '订单列表.xlsx')
+  },
+  //获取城市聚合点数据
+  getCityData(cityId: number) {
+    return request.get(`/order/cluster/${cityId}`)
   }
 }
